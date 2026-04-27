@@ -25,7 +25,6 @@
             padding: 20px;
         }
 
-        /* صليب خلفية شفاف */
         body::before {
             content: "✝";
             position: fixed;
@@ -322,8 +321,13 @@
             const response = await fetch(`https://arabic-bible.onrender.com/api?book=${randomBook}&ch=${randomChapter}&ver=${randomVerse}`);
             if (!response.ok) throw new Error('API failed');
             const data = await response.json();
-            if (data && data.verse) {
-                return { text: data.verse, ref: `${data.bookName || 'الكتاب المقدس'} ${randomChapter}:${randomVerse}` };
+            
+            // التعديلات الجديدة بناءً على طلبك
+            if (data && data.text) {
+                return { 
+                    text: data.text.replace(/^\d+\s*/, ''), 
+                    ref: `${data.bookName} ${data.chapter}` 
+                };
             }
             throw new Error('No verse data');
         } catch(error) {
@@ -455,4 +459,3 @@
 </script>
 </body>
 </html>
-
