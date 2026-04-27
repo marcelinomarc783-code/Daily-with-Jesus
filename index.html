@@ -305,7 +305,7 @@
     let currentVerse = { text: "", ref: "" };
 
     async function fetchVerseFromAPI() {
-        // توليد أرقام عشوائية للبحث
+        // توليد أرقام عشوائية (66 سفر)
         const randomBook = Math.floor(Math.random() * 66) + 1;
         const randomChapter = Math.floor(Math.random() * 20) + 1;
         const randomVerse = Math.floor(Math.random() * 10) + 1;
@@ -318,14 +318,15 @@
             
             if (data && data.text) {
                 return { 
-                    // تنظيف النص من الأرقام في البداية زي ما طلبت
+                    // تنظيف النص من الأرقام في البداية
                     text: data.text.replace(/^\d+\s*/, '').trim(), 
+                    // سحب اسم السفر ورقم الإصحاح والآية بشكل سليم من API
                     ref: `${data.book_name} ${data.chapter}:${data.verse}` 
                 };
             }
             throw new Error('No data');
         } catch(error) {
-            // لو الـ API الأساسي علق بنجرب البديل
+            // محاولة بديلة في حالة الفشل
             try {
                 const altRes = await fetch('https://api.al-kalema.com/v1/verse/random');
                 const altData = await altRes.json();
@@ -334,7 +335,7 @@
                     ref: `${altData.book_name} ${altData.chapter}:${altData.verse}`
                 };
             } catch(e) {
-                return { text: "تعذر الاتصال، حاول مرة أخرى.", ref: "تنبيه" };
+                return { text: "تعذر تحميل آية جديدة حالياً، برجاء المحاولة مرة أخرى.", ref: "تنبيه" };
             }
         }
     }
@@ -355,19 +356,19 @@
 
     function saveCurrentVerse() {
         if (!currentVerse.text || currentVerse.ref === "تنبيه") return;
-        let fav = JSON.parse(localStorage.getItem('fav_verses') || '[]');
+        let fav = JSON.parse(localStorage.getItem('fav_verses_v4') || '[]');
         if (fav.some(v => v.text === currentVerse.text)) {
             alert("⚠️ هذه الآية موجودة بالفعل في المفضلة");
             return;
         }
         fav.push(currentVerse);
-        localStorage.setItem('fav_verses', JSON.stringify(fav));
+        localStorage.setItem('fav_verses_v4', JSON.stringify(fav));
         displayFavVerses();
         alert("✅ تم حفظ الآية");
     }
 
     function displayFavVerses() {
-        const fav = JSON.parse(localStorage.getItem('fav_verses') || '[]');
+        const fav = JSON.parse(localStorage.getItem('fav_verses_v4') || '[]');
         const container = document.getElementById('favVersesList');
         if (fav.length === 0) {
             container.innerHTML = '<p style="color:#7f8c8d; text-align:center;">✨ لا توجد آيات محفوظة بعد</p>';
@@ -384,9 +385,9 @@
     }
 
     function deleteFavVerse(index) {
-        let fav = JSON.parse(localStorage.getItem('fav_verses') || '[]');
+        let fav = JSON.parse(localStorage.getItem('fav_verses_v4') || '[]');
         fav.splice(index, 1);
-        localStorage.setItem('fav_verses', JSON.stringify(fav));
+        localStorage.setItem('fav_verses_v4', JSON.stringify(fav));
         displayFavVerses();
     }
 
