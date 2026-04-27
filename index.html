@@ -4,199 +4,189 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>القطمارس - مكتبة الآيات</title>
+    <meta name="theme-color" content="#ffffff">
+    <title>مكتبة الآيات - كتابك المقدس</title>
     
+    <link rel="manifest" href="https://progressier.app/ZCgRgW8rbI4NZYqbcSeA/progressier.json"/>
+    <script defer src="https://progressier.app/ZCgRgW8rbI4NZYqbcSeA/script.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Amiri', serif;
-            background: #0d1b2a; /* الخلفية الداكنة الأصلية */
-            color: white;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
             min-height: 100vh;
-        }
-
-        /* الهيدر العلوي كما في الصور */
-        .top-nav {
-            background: #1b263b;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-        .app-title { font-size: 1.3rem; font-weight: bold; }
-
-        .date-display {
             padding: 20px;
-            text-align: right;
-            background: rgba(27, 38, 59, 0.8);
         }
-        .coptic-text { color: #c9a03d; font-size: 1.4rem; font-weight: bold; margin-top: 5px; }
-        .sub-text { color: #8d99ae; font-size: 0.9rem; }
-
-        /* أزرار التبديل */
-        .toggle-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
+        body::before {
+            content: "✝"; position: fixed; font-size: 350px; opacity: 0.03;
+            bottom: -80px; left: -80px; pointer-events: none; color: #c9a03d;
         }
-        .btn-toggle {
-            padding: 8px 25px;
-            border-radius: 8px;
-            border: 1px solid #1d3557;
-            background: #1d3557;
-            color: white;
-            cursor: pointer;
-            font-family: 'Amiri';
-        }
-        .btn-toggle.active { background: #000080; border-color: #457b9d; }
-
-        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
-
-        /* التبويبات */
-        .tabs {
-            display: flex; background: #1b263b; border-radius: 15px;
-            padding: 5px; margin-bottom: 20px; border: 1px solid #c9a03d;
-        }
-        .tab {
-            flex: 1; text-align: center; padding: 10px; cursor: pointer;
-            border-radius: 10px; transition: 0.3s;
-        }
-        .tab.active { background: #c9a03d; color: #0d1b2a; font-weight: bold; }
-
-        /* محتوى القراءات */
-        .content-area {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 20px;
-            min-height: 400px;
+        .container { max-width: 650px; margin: 0 auto; }
+        .header {
+            text-align: center; padding: 30px 20px; background: white;
+            border-radius: 60px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             border: 1px solid rgba(201, 160, 61, 0.2);
         }
-
-        .reading-block { margin-bottom: 25px; }
-        .reading-header { color: #c9a03d; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; display: block;}
-        .reading-ref { color: #e63946; font-size: 1rem; margin-bottom: 8px; display: block; }
-        .reading-body { font-size: 1.15rem; line-height: 1.8; color: #edf2f4; text-align: justify; }
-
-        .footer-icon { text-align: center; margin-top: 30px; opacity: 0.3; }
+        .cross-icon {
+            font-size: 50px; color: #c9a03d; margin-bottom: 10px;
+            display: inline-block; animation: gentleGlow 2s ease-in-out infinite;
+        }
+        @keyframes gentleGlow {
+            0%, 100% { text-shadow: 0 0 5px rgba(201, 160, 61, 0.3); }
+            50% { text-shadow: 0 0 15px rgba(201, 160, 61, 0.5); }
+        }
+        .header h1 { font-size: 2rem; color: #2c3e50; }
+        .header h1 span { color: #c9a03d; }
+        .tabs {
+            display: flex; background: white; border-radius: 60px;
+            padding: 5px; margin-bottom: 25px; border: 1px solid rgba(201, 160, 61, 0.2);
+        }
+        .tab {
+            flex: 1; text-align: center; padding: 12px; color: #7f8c8d;
+            cursor: pointer; border-radius: 50px; font-weight: bold; transition: 0.3s;
+            font-size: 0.85rem;
+        }
+        .tab.active { background: linear-gradient(135deg, #c9a03d, #b8860b); color: white; }
+        .content {
+            display: none; background: white; border-radius: 35px;
+            padding: 30px; min-height: 400px; animation: fadeIn 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(201, 160, 61, 0.15);
+        }
+        .content.active-content { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .verse-card {
+            background: #fefefe; border-radius: 25px; padding: 25px;
+            margin-bottom: 20px; border-right: 5px solid #c9a03d;
+        }
+        .verse-text { font-size: 1.5rem; color: #2c3e50; line-height: 1.8; margin-bottom: 15px; }
+        .verse-ref { color: #c9a03d; font-size: 1rem; font-weight: bold; }
+        .btn {
+            background: #2c3e50; color: white; border: none; padding: 10px 22px;
+            border-radius: 50px; cursor: pointer; font-family: 'Amiri'; margin: 5px;
+        }
+        .btn-gold { background: #c9a03d; }
+        .katamaros-item { padding: 15px; border-bottom: 1px solid #eee; }
+        .katamaros-title { color: #c9a03d; font-weight: bold; display: block; }
     </style>
 </head>
 <body>
 
-<div class="top-nav">
-    <div style="font-size: 24px;">☰</div>
-    <div class="app-title">القطمارس</div>
-    <div style="width: 24px;"></div>
-</div>
-
-<div class="date-display">
-    <div id="seasonName" class="sub-text">الخمسين المقدسة</div>
-    <div id="gregorianDate">الثلاثاء 28 أبريل 2026</div>
-    <div id="copticDate" class="coptic-text">20 برمودة 1742</div>
-    <div class="toggle-container">
-        <button class="btn-toggle active">قبطى</button>
-        <button class="btn-toggle">ميلادى</button>
-    </div>
-</div>
-
 <div class="container">
+    <div class="header">
+        <div class="cross-icon">✝</div>
+        <h1>📖 <span>مكتبة</span> الآيات</h1>
+        <p>آيات من الكتاب المقدس والقطمارس اليومي</p>
+    </div>
+
     <div class="tabs">
-        <div class="tab active" data-tab="katamaros">القطمارس</div>
-        <div class="tab" data-tab="verses">آيات</div>
+        <div class="tab active" data-tab="verses">📖 آيات</div>
+        <div class="tab" data-tab="katamaros">⛪ قطمارس</div>
+        <div class="tab" data-tab="coptic">📅 تقويم</div>
     </div>
 
-    <div id="katamaros" class="content-area">
-        <div id="readingsContent">جاري تحميل القراءات...</div>
-    </div>
-
-    <div id="verses" class="content-area" style="display:none;">
-        <div id="verseBox" style="text-align: center; padding-top: 50px;">
-            <p id="vText" style="font-size: 1.5rem; color: #c9a03d; line-height: 1.6;"></p>
-            <p id="vRef" style="margin-top: 20px; color: #8d99ae;"></p>
-            <button onclick="getRandomVerse()" style="margin-top:30px; background:#c9a03d; border:none; padding:10px 20px; border-radius:10px; cursor:pointer;">آية أخرى</button>
+    <div id="verses" class="content active-content">
+        <div class="verse-card">
+            <div class="verse-text" id="verseText">جاري التحميل...</div>
+            <div class="verse-ref" id="verseRef"></div>
+            <div class="actions">
+                <button class="btn" onclick="loadNewVerse()">🔄 آية جديدة</button>
+                <button class="btn btn-gold" onclick="saveCurrentVerse()">❤️ حفظ</button>
+            </div>
         </div>
+        <div id="favVersesList"></div>
     </div>
 
-    <div class="footer-icon">✝</div>
+    <div id="katamaros" class="content">
+        <div id="katamarosHeader" style="margin-bottom:15px; color:#7f8c8d; font-size:0.9rem;"></div>
+        <div id="katamarosContent">جاري تحميل الشواهد...</div>
+    </div>
+
+    <div id="coptic" class="content">
+        <div id="copticInfo"></div>
+    </div>
 </div>
 
 <script>
-    // بيانات القطمارس مرتبطة بالتاريخ القبطي (يوم-شهر)
-    const katamarosData = {
-        "20-8": { // 20 برمودة
-            readings: [
-                { title: "مقدمة انجيل عشية", text: "قفوا بخوف أمام الله وانصتوا لسماع الإنجيل المقدس. فصل من بشارة معلمنا مار متى البشير والتلميذ الطاهر بركاته على جميعنا." },
-                { title: "مزمور عشية", ref: "(6 : 56)", text: "هيأوا لرجلي فخاخاً، وأحنوا نفسي. حفروا قدامي حفرة، وسقطوا فيها. هلليلويا." },
-                { title: "انجيل عشية", ref: "(18 : 6 - 7)", text: "مبارك الآتي باسم الرب، ربنا وإلهنا ومخلصنا وملكنا كلنا يسوع المسيح ابن الله الحي الذي له المجد الدائم إلى الأبد آمين. ومن أعثر أحد هؤلاء الصغار المؤمنين بي، فخير له أن يعلق في عنقه حجر رحى ويغرق في البحر..." }
-            ]
-        },
-        "21-8": { // 21 برمودة (مثال لليوم التالي)
-            readings: [
-                { title: "مزمور عشية", ref: "(2 : 11)", text: "اعبدوا الرب بخشية، واهتفوا له برعدة. هلليلويا." },
-                { title: "انجيل عشية", ref: "(12 : 1 - 5)", text: "وفي ذلك الزمان بدأ يسوع يكلمهم..." }
-            ]
-        }
-    };
+    let currentVerse = { text: "", ref: "" };
 
-    function updateLogic() {
-        const now = new Date();
-        const hour = now.getHours();
-        
-        // تطبيق قاعدة الساعة 5 مساءً
-        if (hour >= 17) {
+    // حساب التاريخ القبطي والتحكم في توقيت الساعة 5
+    function getLogicDate() {
+        let now = new Date();
+        if (now.getHours() >= 17) {
             now.setDate(now.getDate() + 1);
+            document.getElementById('katamarosHeader').innerText = "🕒 عرض قراءات غداً (بعد الساعة 5 مساءً)";
+        } else {
+            document.getElementById('katamarosHeader').innerText = "🕒 قراءات اليوم";
         }
+        return now;
+    }
 
-        // حساب التاريخ القبطي (برمودة هو الشهر الثامن)
-        const cDay = (now.getDate() % 30) || 30; // تبسيط للحساب
-        const cMonthIdx = 8; 
-        const cMonthName = "برمودة";
-
-        document.getElementById('copticDate').innerText = `${cDay} ${cMonthName} 1742`;
-        document.getElementById('gregorianDate').innerText = now.toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
-        // جلب القراءات
-        const key = `${cDay}-${cMonthIdx}`;
-        const data = katamarosData[key] || katamarosData["20-8"];
+    // عرض شواهد القطمارس حسب اليوم القبطي (مثال: 20 برمودة)
+    function loadKatamaros() {
+        const now = getLogicDate();
+        const day = (now.getDate() % 30) || 30; // حساب تقريبي لليوم القبطي
+        const cMonth = "برمودة"; // يمكنك جعلها متغيرة حسب الشهر الميلادي
         
-        const container = document.getElementById('readingsContent');
-        container.innerHTML = data.readings.map(r => `
-            <div class="reading-block">
-                <span class="reading-header">${r.title}</span>
-                ${r.ref ? `<span class="reading-ref">${r.ref}</span>` : ''}
-                <p class="reading-body">${r.text}</p>
-            </div>
-        `).join('');
+        // قاعدة بيانات الشواهد
+        const readings = [
+            { t: "مزمور عشية", r: "مزمور 6 : 56" },
+            { t: "إنجيل عشية", r: "لوقا 10 : 1 - 12" },
+            { t: "البولس", r: "رومية 8 : 28 - 39" },
+            { t: "الكاثوليكون", r: "1 يوحنا 2 : 1 - 6" },
+            { t: "الإبركسيس", r: "أعمال 4 : 8 - 12" }
+        ];
+
+        const container = document.getElementById('katamarosContent');
+        container.innerHTML = `<h3 style="color:#2c3e50; margin-bottom:10px;">قراءات يوم ${day} ${cMonth}</h3>` + 
+            readings.map(item => `
+                <div class="katamaros-item">
+                    <span class="katamaros-title">📍 ${item.t}</span>
+                    <p>${item.r}</p>
+                </div>
+            `).join('');
     }
 
-    // نظام الآيات العشوائية
-    const backupVerses = [
-        {t: "لاَ تَخَفْ لأَنِّي مَعَكَ. لاَ تَتَلَفَّتْ لأَنِّي إِلهُكَ.", r: "إشعياء 41:10"},
-        {t: "أَسْتَطِيعُ كُلَّ شَيْءٍ فِي الْمَسِيحِ الَّذِي يُقَوِّينِي.", r: "فيلبي 4:13"},
-        {t: "اَلرَّبُّ نُورِي وَخَلاَصِي، مِمَّنْ أَخَافُ؟", r: "مزمور 27:1"}
-    ];
-
-    function getRandomVerse() {
-        const v = backupVerses[Math.floor(Math.random() * backupVerses.length)];
-        document.getElementById('vText').innerText = `"${v.t}"`;
-        document.getElementById('vRef').innerText = v.r;
+    async function loadNewVerse() {
+        const vt = document.getElementById('verseText');
+        const vr = document.getElementById('verseRef');
+        try {
+            const res = await fetch('https://api.al-kalema.com/v1/verse/random');
+            const data = await res.json();
+            currentVerse = { text: data.text, ref: `${data.book_name} ${data.chapter}:${data.verse}` };
+            vt.innerText = `"${currentVerse.text}"`;
+            vr.innerText = currentVerse.ref;
+        } catch(e) {
+            vt.innerText = "لاَ تَخَفْ لأَنِّي مَعَكَ."; vr.innerText = "إشعياء 41:10";
+        }
     }
 
-    // التحكم في التبويبات
-    document.querySelectorAll('.tab').forEach(t => {
-        t.onclick = () => {
-            document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-            t.classList.add('active');
-            const target = t.dataset.tab;
-            document.getElementById('katamaros').style.display = target === 'katamaros' ? 'block' : 'none';
-            document.getElementById('verses').style.display = target === 'verses' ? 'block' : 'none';
-            if(target === 'verses') getRandomVerse();
-        };
-    });
+    function displayCopticDate() {
+        const now = new Date();
+        const months = ["توت", "بابة", "هاتور", "كيهك", "طوبة", "أمشير", "برمهات", "برمودة", "بشنس", "بؤونة", "أبيب", "مسرى", "نسيئ"];
+        const day = (now.getDate() % 30) || 30;
+        const month = months[7]; // تثبيت برمودة كمثال للتاريخ في صورك
+        document.getElementById('copticInfo').innerHTML = `
+            <div class="verse-card" style="text-align:center">
+                <div style="font-size:2rem; color:#c9a03d">📅 ${day} ${month} 1742</div>
+                <p style="margin-top:15px;">"هذا هو اليوم الذي صنعه الرب"</p>
+            </div>`;
+    }
 
-    window.onload = updateLogic;
+    window.onload = () => {
+        loadNewVerse();
+        loadKatamaros();
+        displayCopticDate();
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.onclick = () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.content').forEach(c => c.classList.remove('active-content'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active-content');
+            };
+        });
+    };
 </script>
 </body>
 </html>
-
