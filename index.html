@@ -60,7 +60,7 @@
             background: #fefefe; border-radius: 25px; padding: 25px;
             margin-bottom: 20px; border-right: 5px solid #c9a03d;
         }
-        .verse-text { font-size: 1.45rem; color: #2c3e50; line-height: 1.8; margin-bottom: 15px; }
+        .verse-text { font-size: 1.5rem; color: #2c3e50; line-height: 1.8; margin-bottom: 15px; }
         .verse-ref { color: #c9a03d; font-size: 1rem; font-weight: bold; }
         .btn {
             background: #2c3e50; color: white; border: none; padding: 10px 22px;
@@ -68,11 +68,9 @@
         }
         .btn-gold { background: #c9a03d; }
         .katamaros-item {
-            background: #fafafa; border-radius: 20px; padding: 15px;
-            margin-bottom: 15px; border-right: 4px solid #c9a03d;
+            padding: 15px; border-bottom: 1px solid #eee;
         }
-        .katamaros-title { color: #2c3e50; font-weight: bold; display: block; margin-bottom: 5px; }
-        .loading { text-align: center; color: #c9a03d; padding: 20px; }
+        .katamaros-title { color: #c9a03d; font-weight: bold; display: block; }
     </style>
 </head>
 <body>
@@ -87,7 +85,7 @@
     <div class="tabs">
         <div class="tab active" data-tab="verses">📖 آيات</div>
         <div class="tab" data-tab="katamaros">⛪ قطمارس</div>
-        <div class="tab" data-tab="coptic">📅 تقويم</div>
+        <div class="tab" data-tab="coptic">📅 تقويم قبطي</div>
     </div>
 
     <div id="verses" class="content active-content">
@@ -96,74 +94,82 @@
             <div class="verse-ref" id="verseRef"></div>
             <div class="actions">
                 <button class="btn" onclick="loadNewVerse()">🔄 آية جديدة</button>
-                <button class="btn btn-gold" onclick="saveCurrentVerse()">❤️ حفظ</button>
+                <button class="btn btn-gold" onclick="saveCurrentVerse()">❤️ حفظ للمفضلة</button>
+                <button class="btn" onclick="shareCurrentVerse()">📤 مشاركة</button>
             </div>
         </div>
-        <div id="favVersesList"></div>
+        <div id="favVersesList" class="favorites-section"></div>
     </div>
 
     <div id="katamaros" class="content">
-        <div id="katamarosContent">جاري تحميل القراءات...</div>
+        <h2 style="color:#2c3e50; margin-bottom:15px; border-bottom:2px solid #c9a03d; display:inline-block;">قراءات اليوم</h2>
+        <div id="katamarosContent"></div>
     </div>
 
     <div id="coptic" class="content">
-        <div id="copticInfo"></div>
+        <div id="copticInfo" class="coptic-info"></div>
     </div>
 </div>
 
 <script>
     let currentVerse = { text: "", ref: "" };
 
-    // 1. آية اليوم العشوائية
+    // وظيفة تحميل الآيات مع معالجة الأخطاء
     async function loadNewVerse() {
         const vt = document.getElementById('verseText');
         const vr = document.getElementById('verseRef');
-        vt.innerHTML = "جاري التحميل...";
+        vt.innerText = "جاري التحميل...";
+        
         try {
-            const res = await fetch('https://api.al-kalema.com/v1/verse/random');
+            // محاولة أولى من Bolls Life
+            const b = Math.floor(Math.random() * 66) + 1;
+            const c = Math.floor(Math.random() * 15) + 1;
+            const v = Math.floor(Math.random() * 10) + 1;
+            const res = await fetch(`https://bolls.life/get-verse/SVD/${b}/${c}/${v}/`);
             const data = await res.json();
             currentVerse = { text: data.text.replace(/^\d+\s*/, '').trim(), ref: `${data.book_name} ${data.chapter}:${data.verse}` };
-            vt.innerText = `"${currentVerse.text}"`;
-            vr.innerText = currentVerse.ref;
         } catch(e) {
-            vt.innerText = "لاَ تَخَفْ لأَنِّي مَعَكَ."; vr.innerText = "إشعياء 41:10";
+            // محاولة ثانية لو فشل الأول
+            try {
+                const res2 = await fetch('https://api.al-kalema.com/v1/verse/random');
+                const data2 = await res2.json();
+                currentVerse = { text: data2.text.trim(), ref: `${data2.book_name} ${data2.chapter}:${data2.verse}` };
+            } catch(e2) {
+                currentVerse = { text: "لاَ تَخَفْ لأَنِّي مَعَكَ. لاَ تَتَلَفَّتْ لأَنِّي إِلهُكَ.", ref: "إشعياء 41:10" };
+            }
         }
+        vt.innerText = `"${currentVerse.text}"`;
+        vr.innerText = currentVerse.ref;
     }
 
-    // 2. القطمارس - يقلب الساعة 5 مساءً ويعرض النص
-    async function loadKatamaros() {
+    // وظيفة القطمارس (شواهد فقط + قلب الساعة 5 مساءً)
+    function loadKatamaros() {
         const container = document.getElementById('katamarosContent');
         const now = new Date();
         const hour = now.getHours();
         
-        if (hour >= 17) { now.setDate(now.getDate() + 1); } // قلب اليوم الساعة 5 مساءً
+        if (hour >= 17) { now.setDate(now.getDate() + 1); }
         
-        const title = hour >= 17 ? "قراءات غداً" : "قراءات اليوم";
+        const title = hour >= 17 ? "قراءات غداً (مبكر)" : "قراءات اليوم";
         
-        // شواهد اليوم (يمكنك تحديثها)
         const readings = [
-            { type: "البولس", ref: "رومية 8:28" },
-            { type: "الكاثوليكون", ref: "1 يوحنا 2:1" },
-            { type: "إنجيل القداس", ref: "لوقا 10:1" }
+            { t: "البولس", r: "رومية 8 : 28 - 39" },
+            { t: "الكاثوليكون", r: "1 يوحنا 2 : 1 - 6" },
+            { t: "الإبركسيس", r: "أعمال 4 : 8 - 12" },
+            { t: "مزمور العشية", r: "مزمور 145 : 1 , 2" },
+            { t: "إنجيل العشية", r: "لوقا 10 : 1 - 12" }
         ];
 
-        container.innerHTML = `<h2 style="color:#c9a03d; margin-bottom:15px;">⛪ ${title}</h2>`;
-
-        for (let item of readings) {
-            try {
-                const res = await fetch(`https://api.al-kalema.com/v1/verse?ref=${item.ref}`);
-                const data = await res.json();
-                container.innerHTML += `
-                    <div class="katamaros-item">
-                        <span class="katamaros-title">📍 ${item.type}</span>
-                        <small style="color:#c9a03d;">(${item.ref})</small>
-                        <p style="margin-top:10px; font-size:0.95rem; line-height:1.6;">${data.text || "النص غير متوفر حالياً"}</p>
-                    </div>`;
-            } catch(e) { container.innerHTML += `<p>خطأ في تحميل ${item.type}</p>`; }
-        }
+        container.innerHTML = `<p style="color:#7f8c8d; margin-bottom:15px;">🕒 ${title}</p>` + 
+            readings.map(item => `
+                <div class="katamaros-item">
+                    <span class="katamaros-title">📍 ${item.t}</span>
+                    <p>${item.r}</p>
+                </div>
+            `).join('');
     }
 
-    // 3. التقويم القبطي
+    // التقويم القبطي
     function displayCoptic() {
         const today = new Date();
         const months = ["توت", "بابة", "هاتور", "كيهك", "طوبة", "أمشير", "برمهات", "برمودة", "بشنس", "بؤونة", "أبيب", "مسرى", "نسيئ"];
@@ -171,33 +177,37 @@
         const month = months[Math.floor(today.getMonth() % 12)];
         document.getElementById('copticInfo').innerHTML = `
             <div class="verse-card" style="text-align:center">
-                <div style="font-size:2rem; color:#c9a03d">📅 ${day} ${month} 1742</div>
-                <p style="margin-top:15px;">"اِفْرَحُوا فِي الرَّبِّ كُلَّ حِينٍ"</p>
+                <div style="font-size:2.2rem; color:#c9a03d">📅 ${day} ${month} 1742</div>
+                <p style="margin-top:20px; font-size:1.1rem;">"هذا هو اليوم الذي صنعه الرب، نبتهج ونفرح به"</p>
             </div>`;
     }
 
-    // 4. الحفظ والمفضلة
     function saveCurrentVerse() {
-        let fav = JSON.parse(localStorage.getItem('my_favs') || '[]');
-        if (!fav.some(v => v.text === currentVerse.text)) {
-            fav.push(currentVerse);
-            localStorage.setItem('my_favs', JSON.stringify(fav));
-            displayFavs();
-        }
+        let fav = JSON.parse(localStorage.getItem('my_favs_final') || '[]');
+        if (fav.some(v => v.text === currentVerse.text)) return;
+        fav.push(currentVerse);
+        localStorage.setItem('my_favs_final', JSON.stringify(fav));
+        displayFavs();
     }
 
     function displayFavs() {
-        const fav = JSON.parse(localStorage.getItem('my_favs') || '[]');
+        const fav = JSON.parse(localStorage.getItem('my_favs_final') || '[]');
         const container = document.getElementById('favVersesList');
-        container.innerHTML = fav.length ? '<h3 style="margin:20px 0 10px;">⭐ المحفوظات</h3>' : '';
-        container.innerHTML += fav.map(v => `
-            <div class="favorite-item" style="background:white; padding:10px; border-radius:15px; margin-bottom:10px; border-right:3px solid #c9a03d;">
-                <div style="font-size:0.9rem;">"${v.text}"</div>
-                <div style="color:#c9a03d; font-size:0.7rem;">${v.ref}</div>
-            </div>`).join('');
+        if (fav.length === 0) return;
+        container.innerHTML = '<h3 style="margin:20px 0 10px; color:#2c3e50;">⭐ المحفوظات</h3>' + 
+            fav.map(v => `
+                <div style="background:white; padding:15px; border-radius:20px; margin-bottom:10px; border-right:3px solid #c9a03d; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+                    <div style="font-size:0.95rem;">"${v.text}"</div>
+                    <div style="color:#c9a03d; font-weight:bold; font-size:0.8rem; margin-top:5px;">${v.ref}</div>
+                </div>`).join('');
     }
 
-    // 5. تهيئة التبويبات والتشغيل
+    function shareCurrentVerse() {
+        const t = `"${currentVerse.text}"\n📖 ${currentVerse.ref}`;
+        if(navigator.share) navigator.share({text: t});
+        else { navigator.clipboard.writeText(t); alert("تم نسخ الآية"); }
+    }
+
     window.onload = () => {
         loadNewVerse();
         loadKatamaros();
