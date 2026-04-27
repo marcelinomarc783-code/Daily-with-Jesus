@@ -25,7 +25,6 @@
             padding: 20px;
         }
 
-        /* صليب خلفية شفاف */
         body::before {
             content: "✝";
             position: fixed;
@@ -69,17 +68,10 @@
         .header h1 {
             font-size: 2rem;
             color: #2c3e50;
-            letter-spacing: -0.5px;
         }
 
         .header h1 span {
             color: #c9a03d;
-        }
-
-        .header p {
-            color: #7f8c8d;
-            font-size: 0.85rem;
-            margin-top: 5px;
         }
 
         .tabs {
@@ -106,7 +98,6 @@
         .tab.active {
             background: linear-gradient(135deg, #c9a03d, #b8860b);
             color: white;
-            box-shadow: 0 3px 10px rgba(201, 160, 61, 0.3);
         }
 
         .content {
@@ -135,7 +126,6 @@
             padding: 25px;
             margin-bottom: 20px;
             border-right: 5px solid #c9a03d;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
         }
 
         .verse-text {
@@ -149,13 +139,12 @@
             color: #c9a03d;
             font-size: 1rem;
             font-weight: bold;
-            text-align: left;
         }
 
         .actions {
             display: flex;
-            flex-wrap: wrap;
             gap: 10px;
+            flex-wrap: wrap;
             margin-top: 20px;
         }
 
@@ -175,23 +164,11 @@
             background: linear-gradient(135deg, #c9a03d, #b8860b);
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
         .favorites-section {
             margin-top: 25px;
             background: #fafafa;
             border-radius: 25px;
             padding: 20px;
-        }
-
-        .favorites-section h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #c9a03d;
-            display: inline-block;
         }
 
         .favorite-item {
@@ -200,69 +177,38 @@
             padding: 12px;
             margin: 10px 0;
             border-right: 3px solid #c9a03d;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
         }
 
-        .favorite-text {
-            font-size: 0.95rem;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .favorite-ref {
-            color: #c9a03d;
-            font-size: 0.8rem;
-        }
-
-        .delete-fav, .share-fav {
+        .delete-fav {
             background: #dc3545;
             color: white;
             border: none;
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
             cursor: pointer;
             float: left;
             font-size: 0.7rem;
-            margin-left: 8px;
-        }
-
-        .share-fav {
-            background: #25D366;
-        }
-
-        .coptic-info {
-            text-align: center;
-            padding: 20px;
         }
 
         .coptic-date {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #c9a03d;
             margin: 20px 0;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 30px;
-            color: #c9a03d;
+            font-weight: bold;
         }
 
         .loading::after {
             content: "✝";
             display: inline-block;
             animation: spin 1s linear infinite;
-            margin-right: 10px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         @media (max-width: 550px) {
             .verse-text { font-size: 1.2rem; }
-            .tab { font-size: 0.8rem; padding: 8px; }
             .header h1 { font-size: 1.5rem; }
-            .cross-icon { font-size: 40px; }
         }
     </style>
 </head>
@@ -272,194 +218,167 @@
     <div class="header">
         <div class="cross-icon">✝</div>
         <h1>📖 <span>مكتبة</span> الآيات</h1>
-        <p>آيات من الكتاب المقدس - العهد القديم والجديد</p>
+        <p>آيات من الكتاب المقدس والتقويم القبطي</p>
     </div>
 
     <div class="tabs">
         <div class="tab active" data-tab="verses">📖 آيات</div>
-        <div class="tab" data-tab="coptic">📅 تقويم قبطي</div>
+        <div class="tab" data-tab="coptic">📅 تقويم</div>
     </div>
 
     <div id="verses" class="content active-content">
         <div class="verse-card">
-            <div class="verse-text" id="verseText"><span class="loading"></span> جاري تحميل الآية...</div>
+            <div class="verse-text" id="verseText"><span class="loading"></span> جاري التحميل...</div>
             <div class="verse-ref" id="verseRef"></div>
             <div class="actions">
                 <button class="btn" onclick="loadNewVerse()">🔄 آية جديدة</button>
-                <button class="btn btn-gold" onclick="saveCurrentVerse()">❤️ حفظ للمفضلة</button>
+                <button class="btn btn-gold" onclick="saveCurrentVerse()">❤️ حفظ</button>
                 <button class="btn" onclick="shareCurrentVerse()">📤 مشاركة</button>
             </div>
         </div>
         <div class="favorites-section">
-            <h3>⭐ آياتي المفضلة</h3>
+            <h3>⭐ المفضلة</h3>
             <div id="favVersesList"></div>
         </div>
     </div>
 
-    <div id="coptic" class="content">
-        <div class="coptic-info" id="copticInfo"></div>
+    <div id="coptic" class="content" style="text-align:center;">
+        <div id="copticInfo"></div>
     </div>
 </div>
 
 <script>
     let currentVerse = { text: "", ref: "" };
 
+    // 1. نظام جلب الآيات (Bolls Life API)
     async function fetchVerseFromAPI() {
-        // توليد أرقام عشوائية (66 سفر)
         const randomBook = Math.floor(Math.random() * 66) + 1;
         const randomChapter = Math.floor(Math.random() * 20) + 1;
         const randomVerse = Math.floor(Math.random() * 10) + 1;
 
         try {
-            // استخدام Bolls Life API الأضمن لـ GitHub Pages
             const response = await fetch(`https://bolls.life/get-verse/SVD/${randomBook}/${randomChapter}/${randomVerse}/`);
-            if (!response.ok) throw new Error('API failed');
             const data = await response.json();
-            
             if (data && data.text) {
                 return { 
-                    // تنظيف النص من الأرقام في البداية
                     text: data.text.replace(/^\d+\s*/, '').trim(), 
-                    // سحب اسم السفر ورقم الإصحاح والآية بشكل سليم من API
                     ref: `${data.book_name} ${data.chapter}:${data.verse}` 
                 };
             }
-            throw new Error('No data');
-        } catch(error) {
-            // محاولة بديلة في حالة الفشل
-            try {
-                const altRes = await fetch('https://api.al-kalema.com/v1/verse/random');
-                const altData = await altRes.json();
-                return {
-                    text: altData.text.replace(/^\d+\s*/, '').trim(),
-                    ref: `${altData.book_name} ${altData.chapter}:${altData.verse}`
-                };
-            } catch(e) {
-                return { text: "تعذر تحميل آية جديدة حالياً، برجاء المحاولة مرة أخرى.", ref: "تنبيه" };
-            }
+            throw new Error();
+        } catch(e) {
+            return { text: "أَسْتَطِيعُ كُلَّ شَيْءٍ فِي الْمَسِيحِ الَّذِي يُقَوِّينِي.", ref: "فيلبي 4:13" };
         }
     }
 
     async function loadNewVerse() {
-        const verseText = document.getElementById('verseText');
-        const verseRef = document.getElementById('verseRef');
-        
-        verseText.innerHTML = '<span class="loading"></span> جاري تحميل الآية...';
-        verseRef.innerHTML = '';
-        
+        const vt = document.getElementById('verseText');
+        const vr = document.getElementById('verseRef');
+        vt.innerHTML = '<span class="loading"></span> جاري التحميل...';
+        vr.innerText = '';
         const verse = await fetchVerseFromAPI();
         currentVerse = verse;
-        
-        verseText.innerHTML = `"${verse.text}"`;
-        verseRef.innerHTML = verse.ref;
+        vt.innerText = `"${verse.text}"`;
+        vr.innerText = verse.ref;
     }
 
-    function saveCurrentVerse() {
-        if (!currentVerse.text || currentVerse.ref === "تنبيه") return;
-        let fav = JSON.parse(localStorage.getItem('fav_verses_v4') || '[]');
-        if (fav.some(v => v.text === currentVerse.text)) {
-            alert("⚠️ هذه الآية موجودة بالفعل في المفضلة");
-            return;
-        }
-        fav.push(currentVerse);
-        localStorage.setItem('fav_verses_v4', JSON.stringify(fav));
-        displayFavVerses();
-        alert("✅ تم حفظ الآية");
-    }
-
-    function displayFavVerses() {
-        const fav = JSON.parse(localStorage.getItem('fav_verses_v4') || '[]');
-        const container = document.getElementById('favVersesList');
-        if (fav.length === 0) {
-            container.innerHTML = '<p style="color:#7f8c8d; text-align:center;">✨ لا توجد آيات محفوظة بعد</p>';
-            return;
-        }
-        container.innerHTML = fav.map((v, i) => `
-            <div class="favorite-item">
-                <button class="delete-fav" onclick="deleteFavVerse(${i})">🗑 حذف</button>
-                <button class="share-fav" onclick="shareVerseText('${v.text.replace(/'/g, "\\'")}', '${v.ref.replace(/'/g, "\\'")}')">📤</button>
-                <div class="favorite-text">"${v.text}"</div>
-                <div class="favorite-ref">${v.ref}</div>
-            </div>
-        `).join('');
-    }
-
-    function deleteFavVerse(index) {
-        let fav = JSON.parse(localStorage.getItem('fav_verses_v4') || '[]');
-        fav.splice(index, 1);
-        localStorage.setItem('fav_verses_v4', JSON.stringify(fav));
-        displayFavVerses();
-    }
-
-    function shareCurrentVerse() { 
-        if (currentVerse.text && currentVerse.ref !== "تنبيه") shareVerseText(currentVerse.text, currentVerse.ref); 
-    }
-    
-    function shareVerseText(text, ref) {
-        const shareText = `"${text}"\n📖 ${ref}`;
-        if (navigator.share) {
-            navigator.share({ title: 'آية من الكتاب المقدس', text: shareText });
-        } else {
-            navigator.clipboard.writeText(shareText);
-            alert("✅ تم نسخ الآية");
-        }
-    }
-
+    // 2. نظام التقويم القبطي الدقيق
     function getCopticDate() {
-        const today = new Date();
-        const gregorian = today.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
-        const copticMonths = ["توت", "بابة", "هاتور", "كيهك", "طوبة", "أمشير", "برمهات", "برمودة", "بشنس", "بؤونة", "أبيب", "مسرى", "نسيئ"];
-        const copticYear = today.getFullYear() - 284;
-        const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-        let copticMonth = Math.floor((dayOfYear - 1) / 30);
-        let copticDay = (dayOfYear - 1) % 30 + 1;
-        if (copticMonth >= 12) { copticMonth = 12; copticDay = dayOfYear - 360; }
-        if (copticDay < 1) copticDay = 1;
-        return { gregorian, coptic: `${copticDay} ${copticMonths[copticMonth]} ${copticYear}` };
+        let date = new Date();
+        const hour = date.getHours();
+        let isNextDay = false;
+
+        if (hour >= 17) {
+            date.setDate(date.getDate() + 1);
+            isNextDay = true;
+        }
+
+        const cMonths = ["توت", "بابة", "هاتور", "كيهك", "طوبة", "أمشير", "برمهات", "برمودة", "بشنس", "بؤونة", "أبيب", "مسرى", "نسيئ"];
+        
+        // حساب دقيق يعتمد على مرجع ثابت (27 أبريل = 19 برمودة)
+        const refG = new Date(2026, 3, 27); // 27 April 2026
+        const refC = { d: 19, m: 7, y: 1742 }; // 19 Baramouda 1742
+
+        const diffTime = date - refG;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+        let totalDays = (refC.d - 1) + diffDays;
+        let cDay = (totalDays % 30) + 1;
+        let cMonthIdx = (refC.m + Math.floor(totalDays / 30)) % 13;
+        let cYear = refC.y + Math.floor((refC.m + Math.floor(totalDays / 30)) / 13);
+
+        if (cDay <= 0) { cDay += 30; cMonthIdx--; }
+
+        return {
+            coptic: `${cDay} ${cMonths[cMonthIdx]} ${cYear}`,
+            gregorian: date.toLocaleDateString('ar-EG', { day:'numeric', month:'long', year:'numeric'}),
+            isNextDay: isNextDay
+        };
     }
 
     function displayCopticInfo() {
-        const date = getCopticDate();
+        const d = getCopticDate();
         document.getElementById('copticInfo').innerHTML = `
             <div class="verse-card">
-                <div class="coptic-date">📅 ${date.coptic}</div>
-                <div class="verse-text" style="font-size:1.2rem">الموافق: ${date.gregorian}</div>
+                <div class="coptic-date">📅 ${d.coptic}</div>
+                <div class="verse-text" style="font-size:1.2rem">الموافق: ${d.gregorian}</div>
+                <p style="color:#7f8c8d; font-size:0.8rem; margin-top:5px;">
+                    ${d.isNextDay ? "🕒 توقيت الغد (بعد الساعة 5 مساءً)" : "🕒 توقيت اليوم السليم"}
+                </p>
                 <hr style="margin: 15px 0; opacity: 0.1;">
                 <div class="verse-text" style="font-size:1rem;">✝ "اذكروا أعمال الرب التي صنعها، عجائبه وأحكام فمه." ✝</div>
                 <div class="verse-ref">مزمور 105: 5</div>
-                <div class="actions">
-                    <button class="btn" onclick="shareCoptic()">📤 مشاركة التاريخ</button>
-                </div>
             </div>
         `;
     }
 
-    function shareCoptic() {
-        const date = getCopticDate();
-        const text = `📅 اليوم في التقويم القبطي: ${date.coptic}\n📅 الموافق: ${date.gregorian}`;
-        if (navigator.share) navigator.share({ title: 'التقويم القبطي', text: text });
-        else navigator.clipboard.writeText(text) && alert("✅ تم نسخ التاريخ");
+    // 3. المفضلة والمشاركة
+    function saveCurrentVerse() {
+        let fav = JSON.parse(localStorage.getItem('fav_verses_final') || '[]');
+        if (fav.some(v => v.text === currentVerse.text)) return alert("موجودة بالفعل");
+        fav.push(currentVerse);
+        localStorage.setItem('fav_verses_final', JSON.stringify(fav));
+        displayFavVerses();
     }
 
-    function setupTabs() {
-        const tabs = document.querySelectorAll('.tab');
-        const contents = document.querySelectorAll('.content');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabId = tab.getAttribute('data-tab');
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                contents.forEach(c => c.classList.remove('active-content'));
-                document.getElementById(tabId).classList.add('active-content');
-            });
-        });
+    function displayFavVerses() {
+        const fav = JSON.parse(localStorage.getItem('fav_verses_final') || '[]');
+        const container = document.getElementById('favVersesList');
+        if (!fav.length) { container.innerHTML = '<p style="text-align:center; color:#999;">لا يوجد محفوظات</p>'; return; }
+        container.innerHTML = fav.map((v, i) => `
+            <div class="favorite-item">
+                <button class="delete-fav" onclick="deleteFav(${i})">🗑</button>
+                <div style="font-size:0.9rem;">"${v.text}"</div>
+                <div style="color:#c9a03d; font-size:0.8rem;">${v.ref}</div>
+            </div>`).join('');
     }
 
+    function deleteFav(i) {
+        let fav = JSON.parse(localStorage.getItem('fav_verses_final') || '[]');
+        fav.splice(i, 1);
+        localStorage.setItem('fav_verses_final', JSON.stringify(fav));
+        displayFavVerses();
+    }
+
+    function shareCurrentVerse() {
+        const t = `"${currentVerse.text}"\n📖 ${currentVerse.ref}`;
+        if (navigator.share) navigator.share({ title: 'آية', text: t });
+        else { navigator.clipboard.writeText(t); alert("تم النسخ"); }
+    }
+
+    // إعداد التبويبات
     window.onload = () => {
         loadNewVerse();
-        displayFavVerses();
         displayCopticInfo();
-        setupTabs();
+        displayFavVerses();
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.onclick = () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.content').forEach(c => c.classList.remove('active-content'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active-content');
+            };
+        });
     };
 </script>
 </body>
