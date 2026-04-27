@@ -12,64 +12,168 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Amiri', serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
             min-height: 100vh;
             padding: 20px;
         }
+
         body::before {
-            content: "✝"; position: fixed; font-size: 350px; opacity: 0.03;
-            bottom: -80px; left: -80px; pointer-events: none; color: #c9a03d;
+            content: "✝";
+            position: fixed;
+            font-size: 350px;
+            opacity: 0.03;
+            bottom: -80px;
+            left: -80px;
+            pointer-events: none;
+            font-family: serif;
+            color: #c9a03d;
         }
-        .container { max-width: 650px; margin: 0 auto; }
+
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
         .header {
-            text-align: center; padding: 30px 20px; background: white;
-            border-radius: 60px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 60px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             border: 1px solid rgba(201, 160, 61, 0.2);
         }
+
         .cross-icon {
-            font-size: 50px; color: #c9a03d; margin-bottom: 10px;
-            display: inline-block; animation: gentleGlow 2s ease-in-out infinite;
+            font-size: 50px;
+            color: #c9a03d;
+            margin-bottom: 10px;
+            display: inline-block;
+            animation: gentleGlow 2s ease-in-out infinite;
         }
+
         @keyframes gentleGlow {
             0%, 100% { text-shadow: 0 0 5px rgba(201, 160, 61, 0.3); }
             50% { text-shadow: 0 0 15px rgba(201, 160, 61, 0.5); }
         }
-        .header h1 { font-size: 2rem; color: #2c3e50; }
-        .header h1 span { color: #c9a03d; }
-        .tabs {
-            display: flex; background: white; border-radius: 60px;
-            padding: 5px; margin-bottom: 25px; border: 1px solid rgba(201, 160, 61, 0.2);
+
+        .header h1 {
+            font-size: 2rem;
+            color: #2c3e50;
         }
+
+        .header h1 span {
+            color: #c9a03d;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 60px;
+            padding: 5px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 1px solid rgba(201, 160, 61, 0.2);
+        }
+
         .tab {
-            flex: 1; text-align: center; padding: 12px; color: #7f8c8d;
-            cursor: pointer; border-radius: 50px; font-weight: bold; transition: 0.3s;
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            color: #7f8c8d;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s;
+            font-weight: bold;
             font-size: 0.85rem;
         }
-        .tab.active { background: linear-gradient(135deg, #c9a03d, #b8860b); color: white; }
+
+        .tab.active {
+            background: linear-gradient(135deg, #c9a03d, #b8860b);
+            color: white;
+        }
+
         .content {
-            display: none; background: white; border-radius: 35px;
-            padding: 30px; min-height: 400px; animation: fadeIn 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(201, 160, 61, 0.15);
+            display: none;
+            background: white;
+            border-radius: 35px;
+            padding: 30px;
+            min-height: 400px;
+            animation: fadeIn 0.4s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(201, 160, 61, 0.15);
         }
-        .content.active-content { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .content.active-content {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .verse-card {
-            background: #fefefe; border-radius: 25px; padding: 25px;
-            margin-bottom: 20px; border-right: 5px solid #c9a03d;
+            background: #fefefe;
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-right: 5px solid #c9a03d;
         }
-        .verse-text { font-size: 1.5rem; color: #2c3e50; line-height: 1.8; margin-bottom: 15px; }
-        .verse-ref { color: #c9a03d; font-size: 1rem; font-weight: bold; }
+
+        .verse-text {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .verse-ref {
+            color: #c9a03d;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
         .btn {
-            background: #2c3e50; color: white; border: none; padding: 10px 22px;
-            border-radius: 50px; cursor: pointer; font-family: 'Amiri'; margin: 5px; transition: 0.3s;
+            background: linear-gradient(135deg, #2c3e50, #1a252f);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Amiri', serif;
+            transition: all 0.3s;
         }
-        .btn-gold { background: #c9a03d; }
-        .katamaros-item { padding: 15px; border-bottom: 1px solid #eee; }
-        .katamaros-title { color: #c9a03d; font-weight: bold; display: block; }
-        .loading::after { content: "✝"; display: inline-block; animation: spin 1s linear infinite; }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #c9a03d, #b8860b);
+        }
+
+        .katamaros-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .katamaros-title {
+            color: #c9a03d;
+            font-weight: bold;
+            display: block;
+        }
+
+        .loading::after {
+            content: "✝";
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -79,7 +183,7 @@
     <div class="header">
         <div class="cross-icon">✝</div>
         <h1>📖 <span>مكتبة</span> الآيات</h1>
-        <p>آيات من الكتاب المقدس والقطمارس اليومي</p>
+        <p>آيات متجددة والقطمارس اليومي</p>
     </div>
 
     <div class="tabs">
@@ -92,33 +196,35 @@
         <div class="verse-card">
             <div class="verse-text" id="verseText">جاري تحميل الآية...</div>
             <div class="verse-ref" id="verseRef"></div>
-            <div class="actions" style="margin-top:20px;">
+            <div class="actions" style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
                 <button class="btn" onclick="loadNewVerse()">🔄 آية جديدة</button>
                 <button class="btn btn-gold" onclick="saveCurrentVerse()">❤️ حفظ للمفضلة</button>
+                <button class="btn" onclick="shareCurrentVerse()">📤 مشاركة</button>
             </div>
         </div>
-        <div id="favVersesList" style="margin-top:20px;"></div>
+        <div id="favVersesList" style="margin-top:25px;"></div>
     </div>
 
     <div id="katamaros" class="content">
-        <div id="katamarosStatus" style="color:#7f8c8d; margin-bottom:15px; font-size:0.9rem;"></div>
+        <div id="katamarosStatus" style="color:#7f8c8d; margin-bottom:15px; font-size:0.9rem; text-align:center;"></div>
         <div id="katamarosContent"></div>
     </div>
 
     <div id="coptic" class="content">
-        <div id="copticInfo"></div>
+        <div id="copticInfo" style="text-align:center;"></div>
     </div>
 </div>
 
 <script>
     let currentVerse = { text: "", ref: "" };
 
-    // --- 1. نظام الآيات (API "كلمة") ---
+    // 1. نظام الآيات من الـ API
     async function loadNewVerse() {
         const vt = document.getElementById('verseText');
         const vr = document.getElementById('verseRef');
-        vt.innerHTML = '<span class="loading"></span> جاري التحميل...';
+        vt.innerHTML = '<span class="loading"></span> جاري سحب آية جديدة...';
         vr.innerText = "";
+        
         try {
             const res = await fetch('https://api.al-kalema.com/v1/verse/random');
             const data = await res.json();
@@ -131,23 +237,24 @@
         }
     }
 
-    // --- 2. نظام القطمارس الذكي (الساعة 5) ---
+    // 2. نظام القطمارس الذكي (الساعة 5 مساءً)
     function loadKatamaros() {
         const container = document.getElementById('katamarosContent');
         const status = document.getElementById('katamarosStatus');
         const now = new Date();
         const hour = now.getHours();
 
+        // لو الساعة 5 مساءً (17) أو أكثر، اعرض قراءات بكرة
         if (hour >= 17) {
             now.setDate(now.getDate() + 1);
-            status.innerText = "🕒 يتم الآن عرض قراءات غداً (نظام ما بعد 5 مساءً)";
+            status.innerText = "🕒 عرض قراءات غداً (نظام ما بعد 5 مساءً)";
         } else {
-            status.innerText = "🕒 يتم الآن عرض قراءات اليوم";
+            status.innerText = "🕒 قراءات اليوم";
         }
 
-        const day = (now.getDate() % 30) || 30; 
-        const cMonth = "برمودة"; // كمثال
-
+        // حساب اليوم القبطي التقريبي
+        const day = (now.getDate() % 30) || 30;
+        
         const readings = [
             { t: "مزمور عشية", r: "مزمور 6 : 56" },
             { t: "إنجيل عشية", r: "لوقا 10 : 1 - 12" },
@@ -157,60 +264,78 @@
             { t: "إنجيل القداس", r: "لوقا 10 : 1 - 12" }
         ];
 
-        container.innerHTML = `<h3 style="margin-bottom:15px; color:#2c3e50;">⛪ شواهد ${day} ${cMonth}</h3>` + 
+        container.innerHTML = `<h3 style="margin-bottom:20px; color:#2c3e50; text-align:center; border-bottom:2px solid #c9a03d; display:block; padding-bottom:10px;">شواهد ${day} برمودة</h3>` + 
             readings.map(item => `
                 <div class="katamaros-item">
                     <span class="katamaros-title">📍 ${item.t}</span>
-                    <p>${item.r}</p>
+                    <p style="color:#2c3e50;">${item.r}</p>
                 </div>
             `).join('');
     }
 
-    // --- 3. التقويم والمفضلة ---
+    // 3. التقويم والمفضلة والمشاركة
     function displayCoptic() {
         const now = new Date();
         const day = (now.getDate() % 30) || 30;
         document.getElementById('copticInfo').innerHTML = `
-            <div class="verse-card" style="text-align:center">
-                <div style="font-size:2rem; color:#c9a03d">📅 ${day} برمودة 1742</div>
-                <p style="margin-top:15px; color:#7f8c8d;">الموافق: ${now.toLocaleDateString('ar-EG')}</p>
+            <div class="verse-card">
+                <div style="font-size:2.5rem; color:#c9a03d; margin-bottom:10px;">📅 ${day} برمودة 1742</div>
+                <div style="color:#7f8c8d;">الموافق: ${now.toLocaleDateString('ar-EG', {weekday:'long', day:'numeric', month:'long', year:'numeric'})}</div>
             </div>`;
     }
 
     function saveCurrentVerse() {
-        let fav = JSON.parse(localStorage.getItem('fav_v') || '[]');
+        let fav = JSON.parse(localStorage.getItem('fav_verses_v2') || '[]');
         if (!fav.some(v => v.text === currentVerse.text)) {
             fav.push(currentVerse);
-            localStorage.setItem('fav_v', JSON.stringify(fav));
+            localStorage.setItem('fav_verses_v2', JSON.stringify(fav));
             displayFavs();
+            alert("تم حفظ الآية في المفضلة");
         }
     }
 
     function displayFavs() {
-        const fav = JSON.parse(localStorage.getItem('fav_v') || '[]');
+        const fav = JSON.parse(localStorage.getItem('fav_verses_v2') || '[]');
         const container = document.getElementById('favVersesList');
-        container.innerHTML = fav.length ? '<h3 style="margin-bottom:10px;">⭐ المحفوظة</h3>' : '';
-        container.innerHTML += fav.map(v => `
-            <div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; border-right:3px solid #c9a03d; font-size:0.9rem;">
-                "${v.text}" <br> <small style="color:#c9a03d">${v.ref}</small>
-            </div>`).join('');
+        if (fav.length === 0) return;
+        container.innerHTML = '<h3 style="color:#2c3e50; margin-bottom:15px;">⭐ آياتي المحفوظة</h3>' + 
+            fav.map((v, i) => `
+                <div class="favorite-item" style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; border-right:4px solid #c9a03d; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <p style="font-size:1rem;">"${v.text}"</p>
+                    <small style="color:#c9a03d; font-weight:bold;">${v.ref}</small>
+                </div>`).join('');
     }
 
-    // التحكم في التبويبات
+    function shareCurrentVerse() {
+        const text = `"${currentVerse.text}"\n📖 ${currentVerse.ref}`;
+        if (navigator.share) {
+            navigator.share({ title: 'آية اليوم', text: text });
+        } else {
+            navigator.clipboard.writeText(text);
+            alert("تم نسخ الآية للمشاركة");
+        }
+    }
+
+    // تشغيل التبويبات والوظائف عند التحميل
     window.onload = () => {
         loadNewVerse();
         loadKatamaros();
         displayCoptic();
         displayFavs();
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.onclick = () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.content').forEach(c => c.classList.remove('active-content'));
+        
+        const tabs = document.querySelectorAll('.tab');
+        const contents = document.querySelectorAll('.content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.getAttribute('data-tab');
+                tabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-                document.getElementById(tab.dataset.tab).classList.add('active-content');
-            };
+                contents.forEach(c => c.classList.remove('active-content'));
+                document.getElementById(target).classList.add('active-content');
+            });
         });
     };
 </script>
+
 </body>
 </html>
