@@ -64,11 +64,13 @@
         .verse-ref { color: #c9a03d; font-size: 1rem; font-weight: bold; }
         .btn {
             background: #2c3e50; color: white; border: none; padding: 10px 22px;
-            border-radius: 50px; cursor: pointer; font-family: 'Amiri'; margin: 5px;
+            border-radius: 50px; cursor: pointer; font-family: 'Amiri'; margin: 5px; transition: 0.3s;
         }
         .btn-gold { background: #c9a03d; }
         .katamaros-item { padding: 15px; border-bottom: 1px solid #eee; }
         .katamaros-title { color: #c9a03d; font-weight: bold; display: block; }
+        .loading::after { content: "✝"; display: inline-block; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -88,19 +90,19 @@
 
     <div id="verses" class="content active-content">
         <div class="verse-card">
-            <div class="verse-text" id="verseText">جاري التحميل...</div>
+            <div class="verse-text" id="verseText">جاري تحميل الآية...</div>
             <div class="verse-ref" id="verseRef"></div>
-            <div class="actions">
+            <div class="actions" style="margin-top:20px;">
                 <button class="btn" onclick="loadNewVerse()">🔄 آية جديدة</button>
-                <button class="btn btn-gold" onclick="saveCurrentVerse()">❤️ حفظ</button>
+                <button class="btn btn-gold" onclick="saveCurrentVerse()">❤️ حفظ للمفضلة</button>
             </div>
         </div>
-        <div id="favVersesList"></div>
+        <div id="favVersesList" style="margin-top:20px;"></div>
     </div>
 
     <div id="katamaros" class="content">
-        <div id="katamarosHeader" style="margin-bottom:15px; color:#7f8c8d; font-size:0.9rem;"></div>
-        <div id="katamarosContent">جاري تحميل الشواهد...</div>
+        <div id="katamarosStatus" style="color:#7f8c8d; margin-bottom:15px; font-size:0.9rem;"></div>
+        <div id="katamarosContent"></div>
     </div>
 
     <div id="coptic" class="content">
@@ -111,35 +113,51 @@
 <script>
     let currentVerse = { text: "", ref: "" };
 
-    // حساب التاريخ القبطي والتحكم في توقيت الساعة 5
-    function getLogicDate() {
-        let now = new Date();
-        if (now.getHours() >= 17) {
-            now.setDate(now.getDate() + 1);
-            document.getElementById('katamarosHeader').innerText = "🕒 عرض قراءات غداً (بعد الساعة 5 مساءً)";
-        } else {
-            document.getElementById('katamarosHeader').innerText = "🕒 قراءات اليوم";
+    // --- 1. نظام الآيات (API "كلمة") ---
+    async function loadNewVerse() {
+        const vt = document.getElementById('verseText');
+        const vr = document.getElementById('verseRef');
+        vt.innerHTML = '<span class="loading"></span> جاري التحميل...';
+        vr.innerText = "";
+        try {
+            const res = await fetch('https://api.al-kalema.com/v1/verse/random');
+            const data = await res.json();
+            currentVerse = { text: data.text.trim(), ref: `${data.book_name} ${data.chapter}:${data.verse}` };
+            vt.innerText = `"${currentVerse.text}"`;
+            vr.innerText = currentVerse.ref;
+        } catch(e) {
+            vt.innerText = "لاَ تَخَفْ لأَنِّي مَعَكَ. لاَ تَتَلَفَّتْ لأَنِّي إِلهُكَ.";
+            vr.innerText = "إشعياء 41:10";
         }
-        return now;
     }
 
-    // عرض شواهد القطمارس حسب اليوم القبطي (مثال: 20 برمودة)
+    // --- 2. نظام القطمارس الذكي (الساعة 5) ---
     function loadKatamaros() {
-        const now = getLogicDate();
-        const day = (now.getDate() % 30) || 30; // حساب تقريبي لليوم القبطي
-        const cMonth = "برمودة"; // يمكنك جعلها متغيرة حسب الشهر الميلادي
-        
-        // قاعدة بيانات الشواهد
+        const container = document.getElementById('katamarosContent');
+        const status = document.getElementById('katamarosStatus');
+        const now = new Date();
+        const hour = now.getHours();
+
+        if (hour >= 17) {
+            now.setDate(now.getDate() + 1);
+            status.innerText = "🕒 يتم الآن عرض قراءات غداً (نظام ما بعد 5 مساءً)";
+        } else {
+            status.innerText = "🕒 يتم الآن عرض قراءات اليوم";
+        }
+
+        const day = (now.getDate() % 30) || 30; 
+        const cMonth = "برمودة"; // كمثال
+
         const readings = [
             { t: "مزمور عشية", r: "مزمور 6 : 56" },
             { t: "إنجيل عشية", r: "لوقا 10 : 1 - 12" },
             { t: "البولس", r: "رومية 8 : 28 - 39" },
             { t: "الكاثوليكون", r: "1 يوحنا 2 : 1 - 6" },
-            { t: "الإبركسيس", r: "أعمال 4 : 8 - 12" }
+            { t: "الإبركسيس", r: "أعمال 4 : 8 - 12" },
+            { t: "إنجيل القداس", r: "لوقا 10 : 1 - 12" }
         ];
 
-        const container = document.getElementById('katamarosContent');
-        container.innerHTML = `<h3 style="color:#2c3e50; margin-bottom:10px;">قراءات يوم ${day} ${cMonth}</h3>` + 
+        container.innerHTML = `<h3 style="margin-bottom:15px; color:#2c3e50;">⛪ شواهد ${day} ${cMonth}</h3>` + 
             readings.map(item => `
                 <div class="katamaros-item">
                     <span class="katamaros-title">📍 ${item.t}</span>
@@ -148,36 +166,42 @@
             `).join('');
     }
 
-    async function loadNewVerse() {
-        const vt = document.getElementById('verseText');
-        const vr = document.getElementById('verseRef');
-        try {
-            const res = await fetch('https://api.al-kalema.com/v1/verse/random');
-            const data = await res.json();
-            currentVerse = { text: data.text, ref: `${data.book_name} ${data.chapter}:${data.verse}` };
-            vt.innerText = `"${currentVerse.text}"`;
-            vr.innerText = currentVerse.ref;
-        } catch(e) {
-            vt.innerText = "لاَ تَخَفْ لأَنِّي مَعَكَ."; vr.innerText = "إشعياء 41:10";
-        }
-    }
-
-    function displayCopticDate() {
+    // --- 3. التقويم والمفضلة ---
+    function displayCoptic() {
         const now = new Date();
-        const months = ["توت", "بابة", "هاتور", "كيهك", "طوبة", "أمشير", "برمهات", "برمودة", "بشنس", "بؤونة", "أبيب", "مسرى", "نسيئ"];
         const day = (now.getDate() % 30) || 30;
-        const month = months[7]; // تثبيت برمودة كمثال للتاريخ في صورك
         document.getElementById('copticInfo').innerHTML = `
             <div class="verse-card" style="text-align:center">
-                <div style="font-size:2rem; color:#c9a03d">📅 ${day} ${month} 1742</div>
-                <p style="margin-top:15px;">"هذا هو اليوم الذي صنعه الرب"</p>
+                <div style="font-size:2rem; color:#c9a03d">📅 ${day} برمودة 1742</div>
+                <p style="margin-top:15px; color:#7f8c8d;">الموافق: ${now.toLocaleDateString('ar-EG')}</p>
             </div>`;
     }
 
+    function saveCurrentVerse() {
+        let fav = JSON.parse(localStorage.getItem('fav_v') || '[]');
+        if (!fav.some(v => v.text === currentVerse.text)) {
+            fav.push(currentVerse);
+            localStorage.setItem('fav_v', JSON.stringify(fav));
+            displayFavs();
+        }
+    }
+
+    function displayFavs() {
+        const fav = JSON.parse(localStorage.getItem('fav_v') || '[]');
+        const container = document.getElementById('favVersesList');
+        container.innerHTML = fav.length ? '<h3 style="margin-bottom:10px;">⭐ المحفوظة</h3>' : '';
+        container.innerHTML += fav.map(v => `
+            <div style="background:white; padding:15px; border-radius:15px; margin-bottom:10px; border-right:3px solid #c9a03d; font-size:0.9rem;">
+                "${v.text}" <br> <small style="color:#c9a03d">${v.ref}</small>
+            </div>`).join('');
+    }
+
+    // التحكم في التبويبات
     window.onload = () => {
         loadNewVerse();
         loadKatamaros();
-        displayCopticDate();
+        displayCoptic();
+        displayFavs();
         document.querySelectorAll('.tab').forEach(tab => {
             tab.onclick = () => {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
